@@ -1,4 +1,4 @@
 venv
 .idea
 __pycache__
-links_small.csv
+recommender_engine/links_small.csv

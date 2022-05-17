@@ -1,8 +1,13 @@
 from ast import literal_eval
 from collections import Counter
-
+from pathlib import Path
 import pandas as pd
 from nltk.stem.snowball import SnowballStemmer
+
+root_dir = Path(__file__).parent
+
+
+# print(root_dir)
 
 
 class DataProcessor:
@@ -10,10 +15,12 @@ class DataProcessor:
     def __init__(self):
         self.popular_movies = []  # Stores the top 15 highest rated movies according to IMDB's formula
 
-        self.original_metadata = pd.read_csv("cleaned_data.csv")
-        self.meta_data = pd.read_csv("cleaned_data.csv")
-        self.original_ratings = pd.read_csv("cleaned_ratings.csv")
-        self.user_ratings = pd.read_csv("cleaned_ratings.csv")
+        self.original_metadata = pd.read_csv(root_dir / "cleaned_data.csv")
+        print(self.original_metadata.head(5))
+        self.meta_data = pd.read_csv(root_dir / "cleaned_data.csv")
+
+        self.original_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
+        self.user_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
 
         self.create_tags()
         self.compute_popular_movies()
@@ -112,6 +119,7 @@ class DataProcessor:
         """Returns the most positively rated movies by the user.
         Movies that are rated below the avg user rating for a specific user are removed."""
 
+        # TODO READ FROM ACTUAL DF HERE
         all_movies_rated_by_user = self.original_ratings[self.original_ratings["userId"] == user_id]
 
         if filter_on:
@@ -131,6 +139,7 @@ class DataProcessor:
         """Updates the N (15) most positively rated movies using IMDB's weighted rating formula"""
 
         self.popular_movies = []
+        # TODO USE COMBINED DF HERE
         df = self.original_ratings.groupby("tmdbId")
         avg_ratings = df.mean()["rating"]
         vote_counts = df.count()["rating"]
@@ -165,6 +174,7 @@ class DataProcessor:
         return self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]["title"].to_list()
 
     def get_index_from_tmdbid(self, tmdbid):
+
         """Returns absolute index of movie with given tmdbid from original metadata"""
         return self.original_metadata.index[self.original_metadata['tmdbId'] == tmdbid].tolist()[0]
 
@@ -173,3 +183,5 @@ class DataProcessor:
 
     def get_details_from_index(self, idx):
         print(self.original_metadata.iloc[idx]["title"])
+
+# TODO CREATE ACTUAL RATINGS DF

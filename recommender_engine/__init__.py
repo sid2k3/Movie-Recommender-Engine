@@ -12,6 +12,14 @@ cfr = CollaborativeFilteringRecommender(data_manager.filtered_ratings(), NUMBER_
 #
 # for id1, dis in details:
 #     print(data_manager.get_title_from_tmdbid(id1))
+def get_content_based_recommendations(tmdbid: int):
+    """Returns similar movies based on content for a given movie."""
+    print(tmdbid)
+    idx = data_manager.get_index_from_tmdbid(tmdbid)
+
+    similar_movie_indexes = [int(idx1) for sim_score, idx1 in cbr.recommend(idx)]
+    return [data_manager.get_details_from_index(idx1) for idx1 in similar_movie_indexes]
+
 
 def get_recommendations_for_user(user_id: int, mode: str):
     """Returns most related movies based on user rating history"""

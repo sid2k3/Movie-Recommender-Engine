@@ -171,7 +171,7 @@ class DataProcessor:
         return [movie for weighted_rating, movie in self.popular_movies]
 
     def get_title_from_tmdbid(self, tmdbid):
-        return self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]["title"].to_list()
+        return self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]["title"].to_list()[0]
 
     def get_index_from_tmdbid(self, tmdbid):
 
@@ -182,6 +182,7 @@ class DataProcessor:
         return self.original_metadata.iloc[idx]["tmdbId"]
 
     def get_details_from_index(self, idx):
-        print(self.original_metadata.iloc[idx]["title"])
+        # print(self.original_metadata.iloc[idx]["title"])
+        return self.original_metadata.iloc[idx]["title"]
 
 # TODO CREATE ACTUAL RATINGS DF

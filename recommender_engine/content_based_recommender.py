@@ -26,5 +26,6 @@ class ContentBasedRecommender:
         most_similar_movie_indexes = [heappop(similarity_scores) for _ in
                                       range(NUMBER_OF_RECOMMENDATIONS)]  # reducing complexity from nlogn to klogn
 
+        print(most_similar_movie_indexes)
         # returns [(-similarity,movie_index)]
         return most_similar_movie_indexes

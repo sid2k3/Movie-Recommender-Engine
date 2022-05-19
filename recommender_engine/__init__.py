@@ -39,7 +39,7 @@ def get_recommendations_for_user(user_id: int, mode: str):
         normalized_user_rating = row["rating"]
         if mode == "cfr":
             related_movies = cfr.get_similar_movies_knn(movie_tmdbid)
-            # related_movies = related_movies[1:]
+            related_movies = related_movies[1:]  # removing the movie that user has already rated/watched
 
             for movie_id, distance in related_movies:
 
@@ -54,6 +54,7 @@ def get_recommendations_for_user(user_id: int, mode: str):
 
             movie_idx = data_manager.get_index_from_tmdbid(movie_tmdbid)
             related_movies = cbr.recommend(movie_idx)
+            related_movies = related_movies[1:]  # removing the movie that user has already rated/watched
             print(related_movies)
             for similarity, movie_idx in related_movies:
                 score = (-similarity) * normalized_user_rating
@@ -80,6 +81,10 @@ def get_recommendations_for_user(user_id: int, mode: str):
     for movie_id in unique_movies:
         print(data_manager.get_title_from_tmdbid(movie_id))
 
+    return [data_manager.get_title_from_tmdbid(movie_id) for movie_id in unique_movies]
+
+
+get_recommendations_for_user(1, "cbr")
 #
 # get_recommendations_for_user(100001, "cfr")
 

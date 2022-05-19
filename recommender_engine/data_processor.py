@@ -3,8 +3,13 @@ from collections import Counter
 from pathlib import Path
 import pandas as pd
 from nltk.stem.snowball import SnowballStemmer
+from sqlalchemy import create_engine
+from pathlib import Path
 
 root_dir = Path(__file__).parent
+
+target_dir = root_dir.parent / "website"
+cnx = create_engine(f'sqlite:///{target_dir}/database.db').connect()
 
 
 # print(root_dir)
@@ -19,17 +24,28 @@ class DataProcessor:
         print(self.original_metadata.head(5))
         self.meta_data = pd.read_csv(root_dir / "cleaned_data.csv")
 
-        self.original_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
-        self.user_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
+        self.sample_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
+
+        self.actual_ratings = pd.read_sql_table('Rating', cnx)
+        self.actual_ratings = self.actual_ratings[['userId', 'tmdbId', 'rating']]
+
+        print(self.actual_ratings)
+        self.combined_ratings = pd.concat([self.sample_ratings, self.actual_ratings], ignore_index=True)
 
         self.create_tags()
         self.compute_popular_movies()
 
     def filtered_ratings(self):
-        self.user_ratings = self.original_ratings
-        self.user_ratings = self.filter_users(self.user_ratings)
-        self.user_ratings = self.filter_movies(self.user_ratings)
-        return self.user_ratings
+        # TODO USE COMBINED DF HERE
+
+        # Recalculating combined ratings before providing data to CFR class
+        self.combined_ratings = pd.concat([self.sample_ratings, self.actual_ratings], ignore_index=True)
+        # print(self.combined_ratings[self.combined_ratings["userId"] == 1])
+
+        user_ratings = self.filter_users(self.combined_ratings)
+        user_ratings = self.filter_movies(user_ratings)
+        print(user_ratings[user_ratings["userId"] == 1])
+        return user_ratings
 
     def create_tags(self):
         self.format_data_for_tags()
@@ -85,8 +101,8 @@ class DataProcessor:
         """Removes movies which have less than minimum (10) ratings"""
 
         min_ratings = 10  # min ratings required to be considered in data analysis
-
-        movies_with_total_rating_counts = self.original_ratings["tmdbId"].value_counts()
+        # TODO USE COMBINED DF HERE
+        movies_with_total_rating_counts = self.combined_ratings["tmdbId"].value_counts()
 
         movies_to_be_included = movies_with_total_rating_counts.gt(
             min_ratings)  # dataframe where index is tmdbId and value is True or False
@@ -103,12 +119,12 @@ class DataProcessor:
 
         min_number_of_movies_rated = 10  # min movies that need to be rated by the user
 
-        users_with_total_rating_counts = self.original_ratings["userId"].value_counts()
+        users_with_total_rating_counts = ratings_df["userId"].value_counts()
 
         users_to_be_included = users_with_total_rating_counts.gt(
             min_number_of_movies_rated)  # dataframe where index is userId and value is True or False
 
-        # users_to_be_included[users_to_be_included] is a datframe
+        # users_to_be_included[users_to_be_included] is a dataframe
         # in which index represents all the users to be included
 
         ratings_df = ratings_df.loc[ratings_df["userId"].isin(users_to_be_included[users_to_be_included].index)]
@@ -120,7 +136,7 @@ class DataProcessor:
         Movies that are rated below the avg user rating for a specific user are removed."""
 
         # TODO READ FROM ACTUAL DF HERE
-        all_movies_rated_by_user = self.original_ratings[self.original_ratings["userId"] == user_id]
+        all_movies_rated_by_user = self.actual_ratings[self.actual_ratings["userId"] == user_id]
 
         if filter_on:
             all_movies_rated_by_user = self.filter_movies(all_movies_rated_by_user)
@@ -140,7 +156,8 @@ class DataProcessor:
 
         self.popular_movies = []
         # TODO USE COMBINED DF HERE
-        df = self.original_ratings.groupby("tmdbId")
+
+        df = self.combined_ratings.groupby("tmdbId")
         avg_ratings = df.mean()["rating"]
         vote_counts = df.count()["rating"]
 
@@ -153,7 +170,7 @@ class DataProcessor:
 
         overall_mean = avg_ratings.mean()
 
-        for tmdbid in self.original_ratings["tmdbId"].unique():
+        for tmdbid in self.combined_ratings["tmdbId"].unique():
             num_of_votes = vote_counts[tmdbid]
             min_votes_required = 100
 

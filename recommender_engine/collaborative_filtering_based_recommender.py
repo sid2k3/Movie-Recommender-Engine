@@ -5,7 +5,11 @@ from sklearn.neighbors import NearestNeighbors
 class CollaborativeFilteringRecommender:
 
     def __init__(self, user_ratings, neighbors_needed):
+        # user_ratings is ratings after applying all filters
         self.user_rating_matrix = generate_normalized_matrix(user_ratings)
+
+        # print(self.user_rating_matrix[1][118340])
+
         self.neighbors_needed = neighbors_needed
         user_rating_matrix_compressed = csr_matrix(
             self.user_rating_matrix.values)

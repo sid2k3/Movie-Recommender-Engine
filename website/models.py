@@ -12,6 +12,6 @@ class User(db.Model, UserMixin):
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    value = db.Column(db.Integer)
-    movie = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    tmdbId = db.Column(db.Integer)
+    rating = db.Column(db.Integer)

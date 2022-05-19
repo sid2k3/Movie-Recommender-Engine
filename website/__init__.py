@@ -24,9 +24,9 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     db.init_app(app)
 
-    login_manager = LoginManager()
+    login_manager = LoginManager(app)
     login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
+    login_manager.login_message_category = "info"
 
     @login_manager.user_loader
     def load_user(id1):

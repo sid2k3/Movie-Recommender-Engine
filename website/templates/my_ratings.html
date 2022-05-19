@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+Your Ratings
+{% endblock %}
+{% block content %}
+
+<h1 align="center">Your Ratings</h1>
+<ul class="list-group list-group-flush" id="ratings">
+    {% for rating in ratings%}
+    <li class="list-item">
+        <h5>{{rating[0]}} : {{rating[1]}}</h5>
+
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

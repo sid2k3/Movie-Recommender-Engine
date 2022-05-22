@@ -9,6 +9,7 @@ class CollaborativeFilteringRecommender:
         self.user_rating_matrix = generate_normalized_matrix(user_ratings)
 
         # print(self.user_rating_matrix[1][118340])
+        # TODO SPACE OPTIMIZATION HERE
 
         self.neighbors_needed = neighbors_needed
         user_rating_matrix_compressed = csr_matrix(

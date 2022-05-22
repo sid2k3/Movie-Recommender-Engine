@@ -12,3 +12,5 @@ app.get_recommendations_for_user = get_recommendations_for_user
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# TODO REMOVE REQUESTS FROM REQUIREMENTS

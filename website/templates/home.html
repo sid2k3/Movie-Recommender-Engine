@@ -4,9 +4,46 @@ Welcome to Movie Recommender System
 {% endblock %}
 {% block content %}
 
-<h1> hi </h1>
-{{cfr_recommendations}}
-<br>
-<br>
-{{cbr_recommendations}}
+
+<div class="container" id="my_container">
+    <div class="home_search">
+
+        <select class="js-example-basic-single" id="selections" name="state">
+            {%for movie in movies %}
+            <option value="{{movie['tmdbId']}}">{{movie['title']}}</option>
+            {% endfor %}
+
+        </select>
+        <button class="btn btn-primary btn-sm" id="search_button" style="margin-left:1em;">
+            Find Recommendations
+        </button>
+        <!--        <input id="search" type="search" placeholder="The Avengers" list="options"/>-->
+        <!--        <datalist id="options">-->
+
+        <!--            {%for movie in movies %}-->
+        <!--            <option value="{{movie['tmdbId']}}">{{movie['title']}}</option>-->
+
+        <!--            {% endfor %}-->
+        <!--        </datalist>-->
+
+
+    </div>
+    <h3>Recommended for you</h3>
+    <div class="my_row">
+        {%for movie in cbr_recommendations%}
+        {% include 'card.html' %}
+        {%endfor%}
+    </div>
+
+
+    <h3>What Others are Watching</h3>
+
+    <div class="my_row">
+        {%for movie in cfr_recommendations%}
+        {% include 'card.html' %}
+        {%endfor%}
+    </div>
+
+
+</div>
 {% endblock %}

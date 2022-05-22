@@ -77,14 +77,15 @@ def get_recommendations_for_user(user_id: int, mode: str):
         unique_movies.extend(data_manager.get_most_popular_movies()[:extra_recommendations])
         # If we are getting less recommendations than the required number due to lack of data
         # most popular movies are added to get the required number of recommendations
-
+    else:
+        unique_movies = unique_movies[:12]  # Returns 12 most similar movies
     for movie_id in unique_movies:
         print(data_manager.get_title_from_tmdbid(movie_id))
 
-    return [data_manager.get_title_from_tmdbid(movie_id) for movie_id in unique_movies]
+    return [data_manager.get_details_from_tmdbid(movie_id) for movie_id in unique_movies]
 
-
-get_recommendations_for_user(1, "cbr")
+# print(data_manager.get_all_movies())
+# print(get_recommendations_for_user(1, "cbr")[0])
 #
 # get_recommendations_for_user(100001, "cfr")
 
@@ -96,3 +97,4 @@ get_recommendations_for_user(1, "cbr")
 # TODO add high rated movies if amount of similar movies are less
 # TODO change k value to 12
 # TODO include movies if rated above mean
+# TODO GET RECOMMENDATIONS BASED ON GENRE

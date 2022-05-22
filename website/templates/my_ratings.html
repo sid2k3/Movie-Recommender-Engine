@@ -4,12 +4,46 @@ Your Ratings
 {% endblock %}
 {% block content %}
 
-<h1 align="center">Your Ratings</h1>
-<ul class="list-group list-group-flush" id="ratings">
-    {% for rating in ratings%}
-    <li class="list-item">
-        <h5>{{rating[0]}} : {{rating[1]}}</h5>
 
+<ul class="my_list" id="ratings">
+    {% for movie,rating in ratings%}
+    <li class="item">
+
+        <img src={{movie["poster_url"]}} alt="..." style="height: 240px;">
+
+
+        <div class="my_card">
+            <h5 class="card-title">{{movie["title"]}}</h5>
+            <div>
+                {%for i in range(rating) %}
+                <span class="star_icon">★</span>
+
+                {%endfor%}
+
+            </div>
+        </div>
+
+        <form method="POST" action="{{url_for('views.ratings')}}">
+
+
+            <input type="hidden" id="type" name="type" value="delete">
+            <input type="hidden" id="tmdbId" name="tmdbId" value={{movie["tmdbId"]}}>
+            <input type="hidden" id="redirect_url" name="redirect_url" value={{request.url}}>
+
+
+            <button>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        class="bi bi-x"
+                        viewBox="0 0 16 16"
+                >
+                    <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                    />
+                </svg>
+            </button>
+        </form>
     </li>
     {% endfor %}
 </ul>

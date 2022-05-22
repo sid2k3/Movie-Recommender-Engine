@@ -199,7 +199,20 @@ class DataProcessor:
         return self.original_metadata.iloc[idx]["tmdbId"]
 
     def get_details_from_index(self, idx):
-        # print(self.original_metadata.iloc[idx]["title"])
-        return self.original_metadata.iloc[idx]["title"]
 
+        return self.get_details_from_tmdbid(self.get_tmdbid_from_index(idx))
+
+    def get_details_from_tmdbid(self, tmdbid):
+
+        df = self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]
+        df = df[["title", "tmdbId", "top_cast", "poster_url"]]
+        df["top_cast"] = df["top_cast"].apply(lambda x: x[1:-1])
+        # print(df.to_dict("records"))
+        return df.to_dict("records")[0]
+
+    def get_all_movies(self):
+        df = self.original_metadata[["title", "tmdbId"]]
+        df = df.to_dict("records")
+        return df
+        print(df)
 # TODO CREATE ACTUAL RATINGS DF

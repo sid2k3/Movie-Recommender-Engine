@@ -1,0 +1,54 @@
+<div class="my_item">
+    <div class="card text-white bg-dark mb-3 ">
+
+        <img src="{{movie['poster_url']}}" class="card-img-top " alt="...">
+
+
+        <div class="card-body">
+            <h5 class="card-title text-center ">{{movie['title']}}</h5>
+
+            <form id="card_form" method="POST" action="{{url_for('views.ratings')}}">
+                <div class="rating">
+
+                    <label>
+                        <input type="radio" name="stars" value="1"/>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="stars" value="2"/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="stars" value="3"/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="stars" value="4"/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="stars" value="5"/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                </div>
+
+                <input type="hidden" id="type" name="type" value="add">
+                <input type="hidden" id="tmdbId" name="tmdbId" value={{movie["tmdbId"]}}>
+                <input type="hidden" id="redirect_url" name="redirect_url" value={{request.url}}>
+
+                <button class="btn btn-primary btn-sm" type="submit">Rate</button>
+
+            </form>
+        </div>
+    </div>
+</div>

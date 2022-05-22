@@ -1,0 +1,173 @@
+ body {
+     background-color: #212121;
+     color: white 
+}
+ .my_row {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+     gap: 15px;
+}
+ .my_item .card {
+     height: 100%;
+}
+ .card.card.card.card.card {
+     margin-bottom: 0 !important;
+}
+ #ratings li {
+     list-style: none;
+}
+ #ratings {
+     margin-top: 2em;
+     display: flex;
+     flex-direction: column;
+     gap: 1em;
+}
+ #ratings .item {
+     display: grid;
+     grid-template-columns: minmax(150px, 1fr) 4fr minmax(60px, 0.3fr);
+     align-items: center;
+     justify-items: center;
+     gap: 1em;
+}
+ #ratings .item svg {
+     cursor: pointer;
+     color: rgb(97, 97, 97);
+     margin-right: 1em;
+}
+ #ratings .item button {
+     border: none;
+     background: none;
+}
+ #ratings .card-title {
+     font-size: clamp(20px, 4vw, 40px);
+}
+ #ratings .my-card {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     text-align: center;
+}
+ #ratings .item img {
+     display: block;
+     max-width: 100%;
+     height: auto;
+}
+ #ratings .item form, #ratings .item button {
+     width: 100%;
+     height: 100%;
+}
+ #ratings .item button:focus {
+     outline:none;
+}
+ .home_search{
+     display:flex;
+     width:100%;
+     justify-content:center;
+     margin-top:3em;
+     margin-bottom:2em;
+}
+ .home_search input{
+     width:45%;
+}
+ .select2-search input {
+     background-color:#1c1c1c;
+}
+ .select2-search {
+     background-color: #1c1c1c;
+}
+ .select2-results {
+     background-color:#1c1c1c;
+}
+ span.select2-search.select2-search--dropdown > input{
+     color:white;
+}
+ .select2-results__option{
+     display:none;
+}
+ .select2-results__option:nth-child(-n+10){
+     display:block;
+}
+ .select2-container--default .select2-results__option--selected {
+     background-color: #1c1c1c;
+}
+ .rating {
+     display: inline-block;
+     position: relative;
+     height: 50px;
+     line-height: 50px;
+     font-size: 50px;
+}
+ .rating label {
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 100%;
+     cursor: pointer;
+}
+ .rating label:last-child {
+     position: static;
+}
+ .rating label:nth-child(1) {
+     z-index: 5;
+}
+ .rating label:nth-child(2) {
+     z-index: 4;
+}
+ .rating label:nth-child(3) {
+     z-index: 3;
+}
+ .rating label:nth-child(4) {
+     z-index: 2;
+}
+ .rating label:nth-child(5) {
+     z-index: 1;
+}
+ .rating label input {
+     position: absolute;
+     top: 0;
+     left: 0;
+     opacity: 0;
+}
+ .rating label .icon {
+     float: left;
+     color: transparent;
+}
+ .rating label:last-child .icon {
+     color: #000;
+}
+ .rating:not(:hover) label input:checked ~ .icon, .rating:hover label:hover input ~ .icon {
+     color: #09f;
+}
+ .rating label input:focus:not(:checked) ~ .icon:last-child {
+     color: #000;
+     text-shadow: 0 0 5px #09f;
+}
+ #card_form{
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     gap: 1em;
+     margin-top:auto;
+}
+ .card-body {
+     margin-top: auto;
+     display: flex;
+     flex-direction: column;
+}
+ .star_icon{
+     color:#09f;
+     font-size: 50px;
+}
+ .my_card{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+}
+ #my_container{
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+}

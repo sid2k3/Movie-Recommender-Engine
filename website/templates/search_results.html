@@ -1,7 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}
-Welcome to Movie Recommender System
+Search Results
 {% endblock %}
 {% block content %}
+<div class="container" id="search_results_container">
 
+    <h3 style="margin-top:2em;margin-bottom:2em"> Search Results for {{similar_movies[0]['title']}}</h3>
+
+    <div class="my_row">
+        {% set movie=similar_movies[0] %}
+        {% include 'card.html' %}
+
+
+    </div>
+    <h3 style="margin-top:2em;margin-bottom:2em">Similar Movies</h3>
+    <div class="my_row">
+        {%for i in range(1,length)%}
+        {%set movie=similar_movies[i]%}
+        {% include 'card.html' %}
+        {%endfor%}
+    </div>
+
+</div>
 {%endblock%}

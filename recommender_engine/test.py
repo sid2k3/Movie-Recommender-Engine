@@ -9,10 +9,10 @@ from pathlib import Path
 #
 root_dir = Path(__file__).parent
 #
-target_dir = root_dir.parent / "website"
-cnx = create_engine(f'sqlite:///{target_dir}/database.db').connect()
-df = pd.read_sql_table('Rating', cnx)
-df = df[['userId', 'tmdbId', 'rating']]
+# target_dir = root_dir.parent / "website"
+# cnx = create_engine(f'sqlite:///{target_dir}/database.db').connect()
+# df = pd.read_sql_table('Rating', cnx)
+# df = df[['userId', 'tmdbId', 'rating']]
 # df1 = pd.read_csv(root_dir / "cleaned_ratings.csv")
 #
 # print(df1.head(5))
@@ -29,9 +29,17 @@ df = df[['userId', 'tmdbId', 'rating']]
 # print(df.shape)
 #
 # df.to_csv(root_dir.parent / "cleaned_data4.csv")
-print(df.head(15))
-df.drop(df.loc[
-            (df['userId'] == 1) & (
-                    df['tmdbId'] == 863)].index, inplace=True)
-
-print(df.head(15))
+# print(df.head(15))
+# df.drop(df.loc[
+#             (df['userId'] == 1) & (
+#                     df['tmdbId'] == 863)].index, inplace=True)
+#
+# meta_data = pd.read_csv(root_dir / "cleaned_data.csv")
+#
+# sample_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
+#
+# print(sample_ratings.shape)
+# print(sample_ratings[sample_ratings['tmdbId'] == 8677])
+# sample_ratings = sample_ratings[sample_ratings['tmdbId'].isin(meta_data['tmdbId'])]
+# print(sample_ratings.shape)
+# sample_ratings.to_csv(root_dir.parent / 'cleaned_ratings.csv')

@@ -30,7 +30,7 @@ Welcome to Movie Recommender System
     </div>
     <h3>Recommended for you</h3>
     <div class="my_row">
-        {%for movie in cbr_recommendations%}
+        {%for movie in recommendations['cbr']%}
         {% include 'card.html' %}
         {%endfor%}
     </div>
@@ -39,7 +39,7 @@ Welcome to Movie Recommender System
     <h3>What Others are Watching</h3>
 
     <div class="my_row">
-        {%for movie in cfr_recommendations%}
+        {%for movie in recommendations['cfr']%}
         {% include 'card.html' %}
         {%endfor%}
     </div>

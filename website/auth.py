@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, flash, redirect
+from flask import Blueprint, render_template, url_for, flash, redirect, current_app as app
 from .forms import RegisterForm, LoginForm
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,6 +10,7 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    hall_of_fame = app.hall_of_fame()
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email_address=form.email_address.data).first()
@@ -27,7 +28,7 @@ def login():
         else:
             flash("Account does not exist", category="danger")
 
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, hall_of_fame=hall_of_fame)
 
 
 @auth.route("/register", methods=["GET", "POST"])

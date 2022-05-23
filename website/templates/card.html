@@ -1,12 +1,13 @@
 <div class="my_item">
     <div class="card text-white bg-dark mb-3 ">
 
-        <img src="{{movie['poster_url']}}" class="card-img-top " alt="...">
+        <img loading="lazy" src="{{movie['poster_url']}}" class="card-img-top " alt="...">
 
 
         <div class="card-body">
             <h5 class="card-title text-center ">{{movie['title']}}</h5>
 
+            {%if current_user.is_authenticated%}
             <form id="card_form" method="POST" action="{{url_for('views.ratings')}}">
                 <div class="rating">
 
@@ -49,6 +50,7 @@
                 <button class="btn btn-primary btn-sm" type="submit">Rate</button>
 
             </form>
+            {%endif%}
         </div>
     </div>
 </div>

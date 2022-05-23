@@ -152,7 +152,7 @@ class DataProcessor:
         return positively_rated_movies
 
     def compute_popular_movies(self):
-        """Updates the N (15) most positively rated movies using IMDB's weighted rating formula"""
+        """Updates the N (32) most positively rated movies using IMDB's weighted rating formula"""
 
         self.popular_movies = []
         # TODO USE COMBINED DF HERE
@@ -181,11 +181,11 @@ class DataProcessor:
             self.popular_movies.append((weighted_rating, tmdbid))
 
         self.popular_movies = sorted(self.popular_movies, reverse=True)
-        # TODO heapsort here
-        self.popular_movies = self.popular_movies[:15]
+
+        self.popular_movies = self.popular_movies[:32]
 
     def get_most_popular_movies(self):
-        return [movie for weighted_rating, movie in self.popular_movies]
+        return [movie_id for weighted_rating, movie_id in self.popular_movies]
 
     def get_title_from_tmdbid(self, tmdbid):
         return self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]["title"].to_list()[0]
@@ -205,8 +205,8 @@ class DataProcessor:
     def get_details_from_tmdbid(self, tmdbid):
 
         df = self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]
-        df = df[["title", "tmdbId", "top_cast", "poster_url"]]
-        df["top_cast"] = df["top_cast"].apply(lambda x: x[1:-1])
+        df = df[["title", "tmdbId", "poster_url"]]
+
         # print(df.to_dict("records"))
         return df.to_dict("records")[0]
 
@@ -214,5 +214,5 @@ class DataProcessor:
         df = self.original_metadata[["title", "tmdbId"]]
         df = df.to_dict("records")
         return df
-        print(df)
+
 # TODO CREATE ACTUAL RATINGS DF

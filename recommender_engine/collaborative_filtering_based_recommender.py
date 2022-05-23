@@ -1,5 +1,6 @@
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
+import sys
 
 
 class CollaborativeFilteringRecommender:
@@ -10,29 +11,44 @@ class CollaborativeFilteringRecommender:
 
         # print(self.user_rating_matrix[1][118340])
         # TODO SPACE OPTIMIZATION HERE
+        self.movie_ids_to_indices = {}
+        # maps movie ids to indices in sparse matrix
+        idx = 0
+        for movie_id in self.user_rating_matrix.index:
+            # print(movie_id)
+            # print(type(movie_id))
+            self.movie_ids_to_indices[movie_id] = idx
+            idx += 1
 
+        self.indices_to_movie_ids = {v: k
+                                     for k, v in self.movie_ids_to_indices.items()}
+
+        # maps indices of sparse matrix to movie_ids
+        # print(self.user_rating_matrix)
         self.neighbors_needed = neighbors_needed
-        user_rating_matrix_compressed = csr_matrix(
+        self.user_rating_matrix = csr_matrix(
             self.user_rating_matrix.values)
         # using csr_matrix to save space since matrix is sparse
+        # print(self.user_rating_matrix)
 
         self.knn_model = NearestNeighbors(n_neighbors=neighbors_needed, metric='cosine', algorithm='auto')
-        self.knn_model.fit(user_rating_matrix_compressed)
+        self.knn_model.fit(self.user_rating_matrix)
 
     def get_similar_movies_knn(self, movie_tmdbid):
         """Returns the details (tmdbid,distance) of the most related movies to the given
         movie using collaborative filtering model. Distance is inversely proportional to closeness of the movie."""
 
         try:
-            movie_vector = self.user_rating_matrix.loc[movie_tmdbid].values.reshape(1, -1)
+
+            movie_vector = self.user_rating_matrix.getrow(self.movie_ids_to_indices[movie_tmdbid]).todense()
             distances, indices = self.knn_model.kneighbors(movie_vector,
                                                            n_neighbors=self.neighbors_needed)
             distances = distances.flatten()
             indices = indices.flatten()
             similar_movie_ids = []
             for list_idx, movie_idx in enumerate(indices):
-                tmdbid = self.user_rating_matrix.index[
-                    movie_idx]  # get tmdb id (row label) from absolute index (idx) in user_rating matrix
+                tmdbid = self.indices_to_movie_ids[
+                    movie_idx]  # get tmdb id from absolute index (idx) of sparse matrix
                 similar_movie_ids.append((tmdbid, distances[list_idx]))
 
             # print(similar_movie_ids)

@@ -13,7 +13,10 @@ root_dir = Path(__file__).parent
 # cnx = create_engine(f'sqlite:///{target_dir}/database.db').connect()
 # df = pd.read_sql_table('Rating', cnx)
 # df = df[['userId', 'tmdbId', 'rating']]
-# df1 = pd.read_csv(root_dir / "cleaned_ratings.csv")
+
+df1 = pd.read_csv(root_dir / "cleaned_ratings.csv")
+df2 = df1['tmdbId'].value_counts(ascending=True)
+print(df1[df1['userId'] == 66899998])
 #
 # print(df1.head(5))
 # print(df.shape)

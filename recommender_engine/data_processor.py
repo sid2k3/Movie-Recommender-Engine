@@ -22,6 +22,7 @@ class DataProcessor:
 
         self.original_metadata = pd.read_csv(root_dir / "cleaned_data.csv")
         print(self.original_metadata.head(5))
+        print(self.original_metadata.shape)
         self.meta_data = pd.read_csv(root_dir / "cleaned_data.csv")
 
         self.sample_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
@@ -33,6 +34,7 @@ class DataProcessor:
         self.combined_ratings = pd.concat([self.sample_ratings, self.actual_ratings], ignore_index=True)
 
         self.create_tags()
+        self.popular_movies = []
         self.compute_popular_movies()
 
     def filtered_ratings(self):
@@ -117,7 +119,7 @@ class DataProcessor:
     def filter_users(self, ratings_df):
         """Removes users which have rated less than min number of movies required (10)"""
 
-        min_number_of_movies_rated = 10  # min movies that need to be rated by the user
+        min_number_of_movies_rated = 5  # min movies that need to be rated by the user
 
         users_with_total_rating_counts = ratings_df["userId"].value_counts()
 
@@ -154,8 +156,8 @@ class DataProcessor:
     def compute_popular_movies(self):
         """Updates the N (32) most positively rated movies using IMDB's weighted rating formula"""
 
-        self.popular_movies = []
         # TODO USE COMBINED DF HERE
+        popular_movies = []
 
         df = self.combined_ratings.groupby("tmdbId")
         avg_ratings = df.mean()["rating"]
@@ -178,11 +180,12 @@ class DataProcessor:
 
             weighted_rating = (num_of_votes / (num_of_votes + min_votes_required)) * avg_rating_for_given_movie
             weighted_rating += (min_votes_required / (num_of_votes + min_votes_required)) * overall_mean
-            self.popular_movies.append((weighted_rating, tmdbid))
+            popular_movies.append((weighted_rating, tmdbid))
 
-        self.popular_movies = sorted(self.popular_movies, reverse=True)
+        popular_movies = sorted(popular_movies, reverse=True)
 
-        self.popular_movies = self.popular_movies[:32]
+        popular_movies = popular_movies[:32]
+        self.popular_movies = popular_movies
 
     def get_most_popular_movies(self):
         return [movie_id for weighted_rating, movie_id in self.popular_movies]

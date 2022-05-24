@@ -1,22 +1,22 @@
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
-import sys
+from functools import lru_cache
 
 
 class CollaborativeFilteringRecommender:
 
     def __init__(self, user_ratings, neighbors_needed):
         # user_ratings is ratings after applying all filters
-        self.user_rating_matrix = generate_normalized_matrix(user_ratings)
 
-        # print(self.user_rating_matrix[1][118340])
+        self.user_rating_matrix = generate_normalized_matrix(user_ratings)
+        # print(self.user_rating_matrix)
+        print("NORMALIZED MATRIX GENERATED")
+        print(self.user_rating_matrix)
         # TODO SPACE OPTIMIZATION HERE
         self.movie_ids_to_indices = {}
         # maps movie ids to indices in sparse matrix
         idx = 0
         for movie_id in self.user_rating_matrix.index:
-            # print(movie_id)
-            # print(type(movie_id))
             self.movie_ids_to_indices[movie_id] = idx
             idx += 1
 
@@ -24,23 +24,26 @@ class CollaborativeFilteringRecommender:
                                      for k, v in self.movie_ids_to_indices.items()}
 
         # maps indices of sparse matrix to movie_ids
-        # print(self.user_rating_matrix)
+
         self.neighbors_needed = neighbors_needed
         self.user_rating_matrix = csr_matrix(
             self.user_rating_matrix.values)
         # using csr_matrix to save space since matrix is sparse
-        # print(self.user_rating_matrix)
 
         self.knn_model = NearestNeighbors(n_neighbors=neighbors_needed, metric='cosine', algorithm='auto')
         self.knn_model.fit(self.user_rating_matrix)
 
+    @lru_cache(900)  # caching results for 10% of the movies
     def get_similar_movies_knn(self, movie_tmdbid):
         """Returns the details (tmdbid,distance) of the most related movies to the given
         movie using collaborative filtering model. Distance is inversely proportional to closeness of the movie."""
 
+        print("*****************************")
+        print("get_similar_movies_knn")
+        print("*****************************")
         try:
 
-            movie_vector = self.user_rating_matrix.getrow(self.movie_ids_to_indices[movie_tmdbid]).todense()
+            movie_vector = self.user_rating_matrix.getrow(self.movie_ids_to_indices[movie_tmdbid]).toarray()
             distances, indices = self.knn_model.kneighbors(movie_vector,
                                                            n_neighbors=self.neighbors_needed)
             distances = distances.flatten()

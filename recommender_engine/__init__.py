@@ -15,9 +15,25 @@ cfr = CollaborativeFilteringRecommender(data_manager.filtered_ratings(), NUMBER_
 #
 # for id1, dis in details:
 #     print(data_manager.get_title_from_tmdbid(id1))
+def retrain_model():
+    """Runs the knn algo every hour and updates matrix with new data."""
+    global cfr
+    print(f"ID: {id(cfr)}")
+    print("Retraining Model")
+    new_cfr = CollaborativeFilteringRecommender(data_manager.filtered_ratings(), NUMBER_OF_RECOMMENDATIONS)
+    cfr = new_cfr
+    print(f"ID: {id(cfr)}")
+
+
+def recompute_popular_movies():
+    """Runs once a day to calculate popular movies of the day."""
+    print("Recomputing Popular Movies")
+    data_manager.compute_popular_movies()
+
+
 def get_content_based_recommendations(tmdbid: int):
     """Returns similar movies based on content for a given movie."""
-    print(tmdbid)
+    # print(tmdbid)
     idx = data_manager.get_index_from_tmdbid(tmdbid)
 
     similar_movie_indexes = [int(idx1) for sim_score, idx1 in
@@ -60,7 +76,7 @@ def get_separate_recommendations(user_id: int, mode: str):
             movie_idx = data_manager.get_index_from_tmdbid(movie_tmdbid)
             related_movies = cbr.recommend(movie_idx)
             related_movies = related_movies[1:]  # removing the movie that user has already rated/watched
-            print(related_movies)
+            # print(related_movies)
             for similarity, movie_idx in related_movies:
                 score = (-similarity) * normalized_user_rating
                 similar_movie_tmdbid = data_manager.get_tmdbid_from_index(movie_idx)
@@ -84,7 +100,8 @@ def get_separate_recommendations(user_id: int, mode: str):
     else:
         unique_movies = unique_movies[:NUMBER_OF_RECOMMENDATIONS]
     for movie_id in unique_movies:
-        print(data_manager.get_title_from_tmdbid(movie_id))
+        pass
+        # print(data_manager.get_title_from_tmdbid(movie_id))
 
     return unique_movies
     # returns list of form [(idx,tmdbId)]
@@ -146,10 +163,11 @@ def get_recommendations_for_user(user_id: int):
 
     return {'cbr': filtered_cbr_recommendations, 'cfr': filtered_cfr_recommendations}
 
+
 # print(data_manager.get_all_movies())
 # print(get_recommendations_for_user(1, "cbr"))
 #
-# get_recommendations_for_user(1, "cbr")
+# print(get_separate_recommendations(1, "cfr"))
 
 # for tmdbid in data_manager.get_most_popular_movies():
 #     print(data_manager.get_title_from_tmdbid(tmdbid))
@@ -160,3 +178,4 @@ def get_recommendations_for_user(user_id: int):
 # TODO change k value to 12
 # TODO include movies if rated above mean
 # TODO GET RECOMMENDATIONS BASED ON GENRE
+get_content_based_recommendations(863)

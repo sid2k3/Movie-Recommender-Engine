@@ -10,7 +10,7 @@ views = Blueprint("views", __name__)
 @login_required
 def home():
     all_movies = app.data_manager.get_all_movies()
-    print(all_movies)
+    # print(all_movies)
     recommendations = app.get_recommendations_for_user(current_user.id)
 
     return render_template("home.html", recommendations=recommendations, movies=all_movies)
@@ -20,7 +20,7 @@ def home():
 @login_required
 def search(movie_tmdbid):
     similar_movies = app.cbr_recommender(int(movie_tmdbid))
-    print(similar_movies)
+    # print(similar_movies)
     return render_template('search_results.html', similar_movies=similar_movies, length=len(similar_movies))
 
 

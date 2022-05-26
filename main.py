@@ -6,17 +6,17 @@ app = create_app()  # Creating app first because next import is going to need th
 
 from recommender_engine import data_manager, \
     get_content_based_recommendations, get_recommendations_for_user, \
-    get_hall_of_fame, retrain_model, recompute_popular_movies
+    get_hall_of_fame, retrain_model, recompute_popular_movies, get_recommendations_based_on_genre
 
 app.data_manager = data_manager
 
 app.hall_of_fame = get_hall_of_fame
 app.cbr_recommender = get_content_based_recommendations
 app.get_recommendations_for_user = get_recommendations_for_user
-
+app.genre_based_recommendations = get_recommendations_based_on_genre
 scheduler = BackgroundScheduler()
 # TODO CORRECT TIME
-scheduler.add_job(func=retrain_model, trigger="interval", seconds=120)
+scheduler.add_job(func=retrain_model, trigger="interval", seconds=60)
 scheduler.add_job(func=recompute_popular_movies, trigger="interval", hours=24)
 scheduler.start()
 

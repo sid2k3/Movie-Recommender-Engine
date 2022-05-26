@@ -4,10 +4,13 @@ from .data_processor import DataProcessor
 
 NUMBER_OF_RECOMMENDATIONS = 16  # Recommendations needed from each recommender algorithm
 NUMBER_OF_FILTERED_RECOMMENDATIONS = 12
+GENRE_BASED_RECOMMENDATIONS = 24  # Number of recommendations shown for each genre
+
 # Final number of recommendations given to the website (after eliminating common recommendations)
 
 data_manager = DataProcessor()
 cbr = ContentBasedRecommender(data_manager.meta_data, NUMBER_OF_RECOMMENDATIONS)
+
 cfr = CollaborativeFilteringRecommender(data_manager.filtered_ratings(), NUMBER_OF_RECOMMENDATIONS)
 
 
@@ -48,11 +51,13 @@ def get_separate_recommendations(user_id: int, mode: str):
     filter_movies = True  # Filters out movies which have very few ratings(currently 10).
 
     if mode == "cbr":
+        print("Turning off filter")
         filter_movies = False
     # We don't need to filter movies based on ratings if we are using content based recommender
 
     positively_rated_movies = data_manager.get_positively_rated_movies(user_id, filter_movies)
-
+    print(f"MODE:{mode}")
+    print(positively_rated_movies)
     movie_scores = []
 
     for idx, row in positively_rated_movies.iterrows():
@@ -78,8 +83,10 @@ def get_separate_recommendations(user_id: int, mode: str):
             related_movies = related_movies[1:]  # removing the movie that user has already rated/watched
             # print(related_movies)
             for similarity, movie_idx in related_movies:
+                print(type(movie_idx))
+
                 score = (-similarity) * normalized_user_rating
-                similar_movie_tmdbid = data_manager.get_tmdbid_from_index(movie_idx)
+                similar_movie_tmdbid = data_manager.get_tmdbid_from_index(int(movie_idx))
                 movie_scores.append((similar_movie_tmdbid, score))
 
     movie_scores = sorted(movie_scores, key=lambda x: x[1], reverse=True)
@@ -121,7 +128,7 @@ def get_hall_of_fame():
     return [data_manager.get_details_from_tmdbid(movie_id) for movie_id in hall_of_fame]
 
 
-def get_recommendations_for_user(user_id: int):
+def get_recommendations_for_user(user_id: int) -> dict:
     """Gets recommendations from both algorithms and eliminates
     common recommendations."""
 
@@ -164,6 +171,44 @@ def get_recommendations_for_user(user_id: int):
     return {'cbr': filtered_cbr_recommendations, 'cfr': filtered_cfr_recommendations}
 
 
+def get_recommendations_based_on_genre(user_id: int, genre_needed: str):
+    """Returns only those movies which belong to the given genre.
+    Movies are taken from user recommendations (cfr and cbr) and popular movies."""
+
+    all_recommendations = get_recommendations_for_user(user_id)
+
+    genre_based_recommendations = []
+    genre_id_needed = data_manager.genre_to_id[genre_needed]
+    print(f"GENRE ID NEEDED {genre_id_needed}")
+    for rec_type in all_recommendations.values():
+
+        for movie in rec_type:
+            print(f"MOVIE:{movie}")
+            genres = data_manager.get_genres_for_movie(movie['tmdbId'])
+            for genre in genres:
+                genre = genre.lower().replace(' ', '-')
+                try:
+                    genre_id = data_manager.genre_to_id[genre]
+
+                    if genre_id == genre_id_needed:  # movie belongs to the genre
+                        genre_based_recommendations.append(movie['tmdbId'])
+                        break
+                except KeyError:  # some other genre
+                    continue
+
+    # filling recommendations with popular movies of same genre
+    genre_based_recommendations.extend(data_manager.popular_movies_by_genre[genre_id_needed])
+
+    # eliminating common recommendations
+    genre_based_recommendations = list(set(genre_based_recommendations))
+    genre_based_recommendations = [data_manager.get_details_from_tmdbid(movie_id) for movie_id in
+                                   genre_based_recommendations]
+    return genre_based_recommendations[:GENRE_BASED_RECOMMENDATIONS]
+
+#
+# print(data_manager.popular_movies_by_genre)
+# print(data_manager.popular_movies)
+# print(get_recommendations_based_on_genre(1, 'action'))
 # print(data_manager.get_all_movies())
 # print(get_recommendations_for_user(1, "cbr"))
 #
@@ -178,4 +223,4 @@ def get_recommendations_for_user(user_id: int):
 # TODO change k value to 12
 # TODO include movies if rated above mean
 # TODO GET RECOMMENDATIONS BASED ON GENRE
-get_content_based_recommendations(863)
+# print(get_content_based_recommendations(863))

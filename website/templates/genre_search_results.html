@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+Genre
+{% endblock %}
+{% block content %}
+<div class="container" id="search_results_container">
+
+    <h3 style="margin-top:2em;margin-bottom:2em"> Category {{genre}}</h3>
+
+
+    <div class="my_row">
+        {%for i in range(0,length)%}
+        {%set movie=recommendations[i]%}
+        {% include 'card.html' %}
+        {%endfor%}
+    </div>
+
+</div>
+{%endblock%}

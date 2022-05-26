@@ -6,27 +6,48 @@ Welcome to Movie Recommender System
 
 
 <div class="container" id="my_container">
-    <div class="home_search">
+    <div id="top-bar">
+        <div class="home_search">
 
-        <select class="js-example-basic-single" id="selections" name="state">
-            {%for movie in movies %}
-            <option value="{{movie['tmdbId']}}">{{movie['title']}}</option>
-            {% endfor %}
+            <div id="movie-div">
+                <select class="js-example-basic-single" id="selections" name="state">
+                    {%for movie in movies %}
+                    <option value="{{movie['tmdbId']}}">{{movie['title']}}</option>
+                    {% endfor %}
 
-        </select>
-        <button class="btn btn-primary btn-sm" id="search_button" style="margin-left:1em;">
-            Find Recommendations
-        </button>
-        <!--        <input id="search" type="search" placeholder="The Avengers" list="options"/>-->
-        <!--        <datalist id="options">-->
+                </select>
+            </div>
+            <div id="genre-div" class="hidden">
 
-        <!--            {%for movie in movies %}-->
-        <!--            <option value="{{movie['tmdbId']}}">{{movie['title']}}</option>-->
+                <select class="js-example-basic-single" id="genre-selections" name="state">
 
-        <!--            {% endfor %}-->
-        <!--        </datalist>-->
+                    <option value="action">Action</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="comedy">Comedy</option>
+                    <option value="romance">Romance</option>
+                    <option value="science-fiction">Science Fiction</option>
+                    <option value="thriller">Thriller</option>
+
+                </select>
+            </div>
+            <button class="btn btn-primary btn-sm" id="search_button" style="margin-left:1em;">
+                Find Recommendations
+            </button>
 
 
+        </div>
+        <form class="radios" autocomplete="off">
+            Search by
+            <div class="form-check">
+                <input type="radio" checked name="radio" id="movie-radio"/>
+                <label for="movie-radio"> Movie </label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="radio" id="genre-radio"/>
+                <label for="genre-radio"> Genre </label>
+            </div>
+
+        </form>
     </div>
     <h3>Recommended for you</h3>
     <div class="my_row">

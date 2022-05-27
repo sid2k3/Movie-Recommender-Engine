@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from os import path
+from pathlib import Path
 
 from flask_login import LoginManager
 
@@ -9,7 +9,7 @@ DB_NAME = "database.db"
 
 
 def create_database(app):
-    if not path.exists('website/' + DB_NAME):
+    if not (Path(__file__).parent / DB_NAME).exists():
         db.create_all(app=app)
         print('Created Database!')
 

@@ -16,13 +16,11 @@ app.get_recommendations_for_user = get_recommendations_for_user
 app.genre_based_recommendations = get_recommendations_based_on_genre
 scheduler = BackgroundScheduler()
 # TODO CORRECT TIME
-scheduler.add_job(func=retrain_model, trigger="interval", seconds=60)
-scheduler.add_job(func=recompute_popular_movies, trigger="interval", hours=24)
+scheduler.add_job(func=retrain_model, trigger="interval", seconds=120)
+scheduler.add_job(func=recompute_popular_movies, trigger="interval", seconds=60)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
-
-# TODO REMOVE REQUESTS FROM REQUIREMENTS

@@ -1,10 +1,10 @@
 from ast import literal_eval
 from collections import Counter
-from pathlib import Path
 import pandas as pd
 from nltk.stem.snowball import SnowballStemmer
 from sqlalchemy import create_engine
 from pathlib import Path
+import time
 
 root_dir = Path(__file__).parent
 
@@ -14,25 +14,20 @@ cnx = create_engine(f'sqlite:///{target_dir}/database.db').connect()
 GENRE_BASED_RECOMMENDATIONS = 24  # Number of recommendations shown for each genre
 
 
-# print(root_dir)
-
-
 class DataProcessor:
 
     def __init__(self):
-        self.popular_movies = []  # Stores the top 15 highest rated movies according to IMDB's formula
+        self.popular_movies = []  # Stores the top 32 highest rated movies according to IMDB's formula
 
-        self.original_metadata = pd.read_csv(root_dir / "cleaned_data.csv")
-        print(self.original_metadata.head(5))
-        print(self.original_metadata.shape)
-        self.meta_data = pd.read_csv(root_dir / "cleaned_data.csv")
+        self.original_metadata = pd.read_csv(root_dir / "dataset/cleaned_data.csv")
 
-        self.sample_ratings = pd.read_csv(root_dir / "cleaned_ratings.csv")
+        self.meta_data = pd.read_csv(root_dir / "dataset/cleaned_data.csv")
+
+        self.sample_ratings = pd.read_csv(root_dir / "dataset/cleaned_ratings.csv")
 
         self.actual_ratings = pd.read_sql_table('Rating', cnx)
         self.actual_ratings = self.actual_ratings[['userId', 'tmdbId', 'rating']]
 
-        print(self.actual_ratings)
         self.combined_ratings = pd.concat([self.sample_ratings, self.actual_ratings], ignore_index=True)
 
         self.create_tags()
@@ -46,15 +41,13 @@ class DataProcessor:
         self.compute_popular_movies()
 
     def filtered_ratings(self):
-        # TODO USE COMBINED DF HERE
 
         # Recalculating combined ratings before providing data to CFR class
         self.combined_ratings = pd.concat([self.sample_ratings, self.actual_ratings], ignore_index=True)
-        # print(self.combined_ratings[self.combined_ratings["userId"] == 1])
 
         user_ratings = self.filter_users(self.combined_ratings)
         user_ratings = self.filter_movies(user_ratings)
-        print(user_ratings[user_ratings["userId"] == 1])
+
         return user_ratings
 
     def create_tags(self):
@@ -85,9 +78,6 @@ class DataProcessor:
         self.meta_data['keywords'] = self.meta_data['keywords'].apply(
             lambda keyword_list: [stemmer.stem(word) for word in keyword_list])
 
-    # def is_common_keyword(keyword_list: list):
-    #     return [word for word in keyword_list if word in common_keywords]
-
     def remove_rare_keywords(self):
         coun = Counter()
         for idx, keyword_list in self.meta_data["keywords"].items():
@@ -96,8 +86,6 @@ class DataProcessor:
         # Consider keyword if keyword in 5000 most common keywords
 
         common_keywords = set([word for word, freq in coun.most_common(5000)])
-
-        # print(common_keywords)
 
         self.meta_data["keywords"] = self.meta_data["keywords"].apply(lambda keyword_list1:
                                                                       [word for word in keyword_list1 if
@@ -111,7 +99,7 @@ class DataProcessor:
         """Removes movies which have less than minimum (10) ratings"""
 
         min_ratings = 10  # min ratings required to be considered in data analysis
-        # TODO USE COMBINED DF HERE
+
         movies_with_total_rating_counts = self.combined_ratings["tmdbId"].value_counts()
 
         movies_to_be_included = movies_with_total_rating_counts.gt(
@@ -145,7 +133,6 @@ class DataProcessor:
         """Returns the most positively rated movies by the user.
         Movies that are rated below the avg user rating for a specific user are removed."""
 
-        # TODO READ FROM ACTUAL DF HERE
         all_movies_rated_by_user = self.actual_ratings[self.actual_ratings["userId"] == user_id]
 
         if filter_on:
@@ -158,7 +145,7 @@ class DataProcessor:
         # removes movies with rating less than equal to mean user rating
 
         positively_rated_movies["rating"] = positively_rated_movies["rating"].sub(avg_user_rating)
-        print(positively_rated_movies)
+
         return positively_rated_movies
 
     def compute_popular_movies(self):
@@ -166,9 +153,9 @@ class DataProcessor:
         Also computes the 24 most popular movies for each genre.
         """
 
-        # TODO USE COMBINED DF HERE
         popular_movies = []
-        self.popular_movies_by_genre = [[], [], [], [], [], []]
+
+        popular_movies_by_genre_local = [[], [], [], [], [], []]
 
         df = self.combined_ratings.groupby("tmdbId")
         avg_ratings = df.mean()["rating"]
@@ -196,52 +183,53 @@ class DataProcessor:
         popular_movies = sorted(popular_movies, reverse=True)
 
         for rating, tmdbId in popular_movies:
+
             genres = self.get_genres_for_movie(tmdbId)
+
+            total_len = sum([len(lst) for lst in popular_movies_by_genre_local])
+
+            if total_len >= GENRE_BASED_RECOMMENDATIONS * len(
+                    popular_movies_by_genre_local):  # movies for all genres are computed
+                break
 
             for genre in genres:
                 genre = genre.lower().replace(' ', '-')
                 if genre == 'action':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
                 if genre == 'adventure':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
                 if genre == 'comedy':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
                 if genre == 'romance':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
                 if genre == 'science-fiction':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
                 if genre == 'thriller':
                     genre_id = self.genre_to_id[genre]
-                    if len(self.popular_movies_by_genre[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
-                        self.popular_movies_by_genre[genre_id].append(tmdbId)
-
-                total_len = sum([len(lst) for lst in self.popular_movies_by_genre])
-
-                if total_len == GENRE_BASED_RECOMMENDATIONS * len(
-                        self.popular_movies_by_genre):  # movies for all genres are computed
-                    break
+                    if len(popular_movies_by_genre_local[genre_id]) < GENRE_BASED_RECOMMENDATIONS:
+                        popular_movies_by_genre_local[genre_id].append(tmdbId)
 
         popular_movies = popular_movies[:32]
         self.popular_movies = popular_movies
+        self.popular_movies_by_genre = popular_movies_by_genre_local
 
     def get_genres_for_movie(self, tmdbid):
-        print("************************")
-        print(self.original_metadata[self.original_metadata['tmdbId'] == tmdbid]['genres'].item())
+        """Returns all the genres a movie belongs to."""
         return literal_eval(self.original_metadata[self.original_metadata['tmdbId'] == tmdbid]['genres'].item())
 
     def get_most_popular_movies(self):
@@ -264,12 +252,9 @@ class DataProcessor:
         df = self.original_metadata[self.original_metadata["tmdbId"] == tmdbid]
         df = df[["title", "tmdbId", "poster_url"]]
 
-        # print(df.to_dict("records"))
         return df.to_dict("records")[0]
 
     def get_all_movies(self):
         df = self.original_metadata[["title", "tmdbId"]]
         df = df.to_dict("records")
         return df
-
-    # TODO CREATE ACTUAL RATINGS DF

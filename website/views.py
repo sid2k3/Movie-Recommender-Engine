@@ -10,7 +10,7 @@ views = Blueprint("views", __name__)
 @login_required
 def home():
     all_movies = app.data_manager.get_all_movies()
-    # print(all_movies)
+
     recommendations = app.get_recommendations_for_user(current_user.id)
 
     return render_template("home.html", recommendations=recommendations, movies=all_movies)
@@ -20,7 +20,7 @@ def home():
 @login_required
 def search(movie_tmdbid):
     similar_movies = app.cbr_recommender(int(movie_tmdbid))
-    # print(similar_movies)
+
     return render_template('search_results.html', similar_movies=similar_movies, length=len(similar_movies))
 
 
@@ -28,7 +28,7 @@ def search(movie_tmdbid):
 @login_required
 def search_genre(genre: str):
     recommendations = app.genre_based_recommendations(current_user.id, genre)
-    # print(similar_movies)
+
     return render_template('genre_search_results.html', recommendations=recommendations, length=len(recommendations),
                            genre=genre.replace('-', ' ').title())
 
@@ -39,13 +39,12 @@ def ratings():
     if request.method == "GET":
         user_ratings = []
         for rating in current_user.ratings:
-            print("***********************")
-            print(f"RATING {rating}")
             movie_info = app.data_manager.get_details_from_tmdbid(rating.tmdbId)
             user_ratings.append((movie_info, rating.rating))
-        return render_template("my_ratings.html", ratings=user_ratings)
+        length = len(user_ratings)
+        return render_template("my_ratings.html", ratings=user_ratings, length=length)
     else:
-        print(request.form)
+
         movie_id = int(request.form["tmdbId"])
 
         operation_type = request.form["type"]
@@ -76,15 +75,12 @@ def ratings():
             if old_rating:
                 db.session.delete(old_rating)
                 db.session.commit()
-                print("DELETING")
-                print(ratings_df.loc[
-                          (ratings_df['userId'] == current_user.id) & (
-                                  ratings_df['tmdbId'] == movie_id)])
+
                 ratings_df.drop(ratings_df.loc[
                                     (ratings_df['userId'] == current_user.id) & (
                                             ratings_df['tmdbId'] == movie_id)].index, inplace=True)
 
                 ratings_df.reset_index(drop=True, inplace=True)
                 flash("Rating Deleted Successfully", category="info")
-        print(ratings_df)
+
         return redirect(request.form["redirect_url"])

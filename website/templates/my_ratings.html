@@ -6,10 +6,12 @@ Your Ratings
 
 
 <ul class="my_list" id="ratings">
+
+
     {% for movie,rating in ratings%}
     <li class="item">
 
-        <img src={{movie["poster_url"]}} alt="..." style="height: 240px;">
+        <img src={{movie["poster_url"]}} alt="Poster Not Available" style="height: 240px;">
 
 
         <div class="my_card">
@@ -46,5 +48,9 @@ Your Ratings
         </form>
     </li>
     {% endfor %}
+
+    {%if length==0%}
+    <h3 style="text-align:center;">No Ratings Found</h3>
+    {%endif%}
 </ul>
 {% endblock %}

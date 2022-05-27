@@ -2,3 +2,5 @@ venv
 .idea
 __pycache__
 recommender_engine/links_small.csv
+test.py
+readme.md

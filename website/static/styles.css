@@ -1,6 +1,6 @@
  body {
      background-color: #212121;
-     color: white 
+     color: white
 }
  .my_row {
      display: grid;
@@ -67,9 +67,8 @@
      margin-top:3em;
      margin-bottom:2em;
 }
-
-#search_button{
-white-space:nowrap;
+ #search_button{
+     white-space:nowrap;
 }
  .home_search input{
      width:45%;
@@ -89,7 +88,7 @@ white-space:nowrap;
      color:white;
 }
  .select2-results__option{
- color:#F2F2F2;
+     color:#F2F2F2;
      display:none;
 }
  .select2-results__option:nth-child(-n+10){
@@ -97,7 +96,7 @@ white-space:nowrap;
 }
  .select2-container--default .select2-results__option--selected {
      background-color: #141111;
-      color:#F2F2F2;
+     color:#F2F2F2;
 }
  .rating {
      display: inline-block;
@@ -179,85 +178,71 @@ white-space:nowrap;
      flex-direction: column;
      gap: 2.5rem;
 }
-#search_results_container{
+ #search_results_container{
      display: flex;
      flex-direction: column;
      gap: 1rem;
-
 }
-#login-movies {
-  display: grid;
-  grid-template-columns: 4fr minmax(30vw, 1fr);
-  grid-template-areas:
-    'hall .'
-    'items login';
-  /* align-items: center; */
-  margin: 2em;
+ #login-movies {
+     display: grid;
+     grid-template-columns: 4fr minmax(30vw, 1fr);
+     grid-template-areas: 'hall .' 'items login';
+    /* align-items: center;
+     */
+     margin: 2em;
 }
-
-#login-movies #hall_of_fame {
-  grid-area: hall;
+ #login-movies #hall_of_fame {
+     grid-area: hall;
 }
-#login-movies form {
-  grid-area: login;
+ #login-movies form {
+     grid-area: login;
 }
-#login-movies .my_row {
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-area: items;
-  gap: 4rem;
+ #login-movies .my_row {
+     grid-template-columns: 1fr 1fr 1fr;
+     grid-area: items;
+     gap: 4rem;
 }
-
-@media (min-width: 1149px) {
-  #login-movies form {
-    margin-top: 2rem;
-  }
-  #login-movies .my_row {
-    margin-top: 2rem;
-    margin-right: 10rem;
-  }
+ @media (min-width: 1149px) {
+     #login-movies form {
+         margin-top: 2rem;
+    }
+     #login-movies .my_row {
+         margin-top: 2rem;
+         margin-right: 10rem;
+    }
 }
-#login-movies .my_item .card-body h5 {
-  font-size: clamp(15px, 2vw, 40px) !important;
+ #login-movies .my_item .card-body h5 {
+     font-size: clamp(15px, 2vw, 40px) !important;
 }
-
-@media (max-width: 1149px) {
-  #login-movies {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'login'
-      'hall'
-      'items';
-    gap: 1em;
-  }
-  #login-movies form {
-    grid-row-start: 1;
-  }
-
-  #login-movies .card-body {
-    padding: 0;
-    padding-top: 1em;
-  }
+ @media (max-width: 1149px) {
+     #login-movies {
+         grid-template-columns: 1fr;
+         grid-template-areas: 'login' 'hall' 'items';
+         gap: 1em;
+    }
+     #login-movies form {
+         grid-row-start: 1;
+    }
+     #login-movies .card-body {
+         padding: 0;
+         padding-top: 1em;
+    }
 }
-#card-buttons{
-
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:1em;
+ #card-buttons{
+     display:grid;
+     grid-template-columns:1fr 1fr;
+     gap:1em;
 }
-#top-bar{
-
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-
+ #top-bar{
+     display:flex;
+     flex-direction:column;
+     justify-content:center;
+     align-items:center;
 }
-.radios{
-
-display:flex;
-gap:1em;
+ .radios{
+     display:flex;
+     gap:1em;
 }
-.hidden{
-display:none;
-
+ .hidden{
+     display:none;
 }

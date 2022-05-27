@@ -9,10 +9,7 @@ class CollaborativeFilteringRecommender:
         # user_ratings is ratings after applying all filters
 
         self.user_rating_matrix = generate_normalized_matrix(user_ratings)
-        # print(self.user_rating_matrix)
-        print("NORMALIZED MATRIX GENERATED")
-        print(self.user_rating_matrix)
-        # TODO SPACE OPTIMIZATION HERE
+
         self.movie_ids_to_indices = {}
         # maps movie ids to indices in sparse matrix
         idx = 0
@@ -38,9 +35,6 @@ class CollaborativeFilteringRecommender:
         """Returns the details (tmdbid,distance) of the most related movies to the given
         movie using collaborative filtering model. Distance is inversely proportional to closeness of the movie."""
 
-        print("*****************************")
-        print("get_similar_movies_knn")
-        print("*****************************")
         try:
 
             movie_vector = self.user_rating_matrix.getrow(self.movie_ids_to_indices[movie_tmdbid]).toarray()
@@ -54,7 +48,6 @@ class CollaborativeFilteringRecommender:
                     movie_idx]  # get tmdb id from absolute index (idx) of sparse matrix
                 similar_movie_ids.append((tmdbid, distances[list_idx]))
 
-            # print(similar_movie_ids)
             return [(movie_tmdbid, distance) for movie_tmdbid, distance in
                     sorted(similar_movie_ids, key=lambda x: x[1])]
 

@@ -4,7 +4,6 @@ import pandas as pd
 from nltk.stem.snowball import SnowballStemmer
 from sqlalchemy import create_engine
 from pathlib import Path
-import time
 
 root_dir = Path(__file__).parent
 

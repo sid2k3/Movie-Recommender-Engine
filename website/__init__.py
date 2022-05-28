@@ -20,7 +20,7 @@ def create_app():
     from .models import User
 
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "10adec989e572b59ece2facf"
+    app.config["SECRET_KEY"] = "10adec989e572b59ece2facf"  # Sample Security Key
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     db.init_app(app)
 

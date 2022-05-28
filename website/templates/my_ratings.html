@@ -10,9 +10,9 @@ Your Ratings
 
     {% for movie,rating in ratings%}
     <li class="item">
-
-        <img src={{movie["poster_url"]}} alt="Poster Not Available" style="height: 240px;">
-
+        <a href="/search/{{movie['tmdbId']}}">
+            <img src={{movie["poster_url"]}} alt="Poster Not Available" style="height: 240px;">
+        </a>
 
         <div class="my_card">
             <h5 class="card-title">{{movie["title"]}}</h5>

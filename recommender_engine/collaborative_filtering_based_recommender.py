@@ -30,7 +30,7 @@ class CollaborativeFilteringRecommender:
         self.knn_model = NearestNeighbors(n_neighbors=neighbors_needed, metric='cosine', algorithm='auto')
         self.knn_model.fit(self.user_rating_matrix)
 
-    @lru_cache(900)  # caching results for 10% of the movies
+    @lru_cache(400)  # caching results for 5% of the movies
     def get_similar_movies_knn(self, movie_tmdbid):
         """Returns the details (tmdbid,distance) of the most related movies to the given
         movie using collaborative filtering model. Distance is inversely proportional to closeness of the movie."""

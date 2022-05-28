@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app as app, render_template, url_for, flash, request, redirect
+from flask import Blueprint, current_app as app, render_template, flash, request, redirect
 from flask_login import login_required, current_user
 from .models import Rating
 from . import db

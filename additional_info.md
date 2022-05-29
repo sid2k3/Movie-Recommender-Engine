@@ -3,7 +3,7 @@
 ## Table of Contents
 
 1. [Project Structure and Working](#project-structure--working)
-2. [Role of Algorithms](#role)
+2. [Role of Algorithms](#role-of-algorithms)
 
 ## Project Structure & Working
 

@@ -10,6 +10,7 @@ This project was built as a part of [Microsoft Engage 2022](https://acehacker.co
 4. [Built With](#built-with)
 5. [Instructions To Run](#instructions-to-run)
 6. [Video Demonstration](#demonstration-video)
+7. [Additional Information](#additional-information)
 
 ### About The Project
 
@@ -54,6 +55,13 @@ There are two ways to run this application. The simplest one is to use Docker.
 docker run -p 5000:5000 sid2k3/movie_recommender:latest
 ```
 
+<br>
+
+> Note: The recommender requires around 1 minute of one-time precomputation. Please wait
+> while it completes this step.
+
+<br>
+
 #### 2. Manual Installation
 
 1. Install python 3.9
@@ -96,3 +104,8 @@ python main.py
 ### Demonstration Video
 
 To view the video click [here]().
+
+### Additional Information
+
+To know more about this project
+click [here](https://github.com/sid2k3/Movie-Recommender-Engine/blob/master/additional_info.md).

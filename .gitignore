@@ -3,6 +3,4 @@ venv
 __pycache__
 recommender_engine/links_small.csv
 test.py
-readme.md
-additional_info.md
 *.db

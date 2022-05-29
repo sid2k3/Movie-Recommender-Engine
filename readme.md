@@ -103,7 +103,7 @@ python main.py
 
 ### Demonstration Video
 
-To view the video click [here]().
+To view the video click [here](https://youtu.be/8CWY8nyfkSo).
 
 ### Additional Information
 

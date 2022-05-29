@@ -17,7 +17,7 @@ This project consists of two components.
 The recommender engine is responsible for giving recommendations for a particular user or a movie. It is mainly divided
 into four parts.
 
-* Content Based Recommender
+* Content-Based Recommender
 * Collaborative Filtering Based Recommender
 * Data Processor
 * Recommendations for user
@@ -25,10 +25,10 @@ into four parts.
 #### Content Based Recommender
 
 This class takes the metadata with tags (5000 most common keywords, top_cast, director, genre)
-from the DataProcessor class as input and generates a matrix which stores the occurrence of each tag for each movie.
-Every row of this matrix is a vector which tells us about the tags a particular movie contains. Similarity matrix is
-then computing by calculating the [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) between each
-movie vector and all other vectors.
+from the DataProcessor class as input and generates a matrix that stores the occurrence of each tag for each movie.
+Every row of this matrix is a vector that tells us about the tags a particular movie contains. Similarity matrix is then
+computed by calculating the [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) between each movie
+vector and all other vectors.
 
 Then each row of this matrix is partially sorted to include only the top k most similar movies for each movie. Whenever
 recommendations are needed for a movie this recommender simply returns the data stored in the final resultant matrix for
@@ -51,13 +51,13 @@ Each row of the generated matrix corresponds to a movie and each column correspo
 
 Normalized rating is the actual rating given by a user subtracted by the mean rating of the same user.
 
-This class then use
+This class then uses
 the [K Nearest Neighbours Algorithm (KNN)](https://scikit-learn.org/stable/modules/neighbors.html#neighbors) to find
-similar movies for a given movie. The criteria used to find neighbours is
+similar movies for a given movie. The criteria used to find neighbors is
 the [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) between the movie vectors (row of a matrix).
 Since the matrix contains normalized ratings, we can say that we are using centered cosine similarity to compute similar
-movies. Basically, this class implements item-item collaborative filtering using KNN. The model is retrained every 2
-hours with the new data collected, this is done because the dataset used to train is quite small.
+movies. This class implements item-item collaborative filtering using KNN. The model is retrained every 2 hours with the
+new data collected, this is done because the dataset used to train is quite small.
 <br>
 <br>
 ![Collaborative Filtering Based Recommender](https://i.imgur.com/JFgE7A7.png)
@@ -67,8 +67,8 @@ hours with the new data collected, this is done because the dataset used to trai
 This class deals with all the data files. It is responsible for storing data from the csv files and the database in
 dataframes. All the operations that are performed on the data are done in this class. It provides filtered data to both
 the recommender classes. It contains utility functions to get, set and filter data. It also maintains a list of popular
-movies and popular movies for each genre. Popular movies are those movies which have the highest weighted rating
-according to IMDB's weighted rating formula. The popular movies are recomputed every day.
+movies and popular movies for each genre. Popular movies are those movies that have the highest weighted rating
+according to IMDB's weighted rating formula. Popular movies are recomputed every day.
 
 ```
 IMDB's Weighted Rating Formula
@@ -119,7 +119,7 @@ ___
 
 ## Role of Algorithms
 
-Apart from the algorithms used to generate the recommendations there are a some other algorithms which play an integral
+Apart from the algorithms used to generate the recommendations there are some other algorithms which play an integral
 part in improving the performance of this application.
 
 These algorithms include-
@@ -134,17 +134,17 @@ These algorithms include-
 Since we are only interested in the top recommendations out of all the recommendations for a movie, sorting is required
 at many places in this project. An efficient sorting algorithm is the key to faster performance.
 
-In this project while computing the top k (16) content based recommendations for each movie, we are required to sort
+In this project, while computing the top k (16) content-based recommendations for each movie, we are required to sort
 each row of the similarity matrix which contains ≈8000 entries. Since we need only top k (16) entries from those 8000
 entries for each row, a regular O(NlogN) sort would surely become a bottleneck in the whole computation process. As we
-are dealing with numpy arrays here, it would be much better to use the functionality provided in the numpy library.
+are dealing with NumPy arrays here, it would be much better to use the functionality provided in the NumPy library.
 
 A better way to get top k recommendations is to first partition the array
 using [numpy.ndarray.partition](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.partition.html#numpy.ndarray.partition)
 which works in O(N) time. After partitioning the first k indices would contain the top k results. Now we can slice the
 array and perform a normal [numpy.sort](https://numpy.org/doc/stable/reference/generated/numpy.sort.html) on the sliced
 array. Since the sliced array is much smaller than the original array, this kind of sorting would result in a much
-better average performance then a normal sort.  
+better average performance than a normal sort.  
 <br>
 
 > Note: We are not using heap sort because the matrix is a numpy.ndarray therefore a partial sort using the inbuilt functions is much easier to write and has performance similar to heap sort.
@@ -155,14 +155,14 @@ In this project caching plays the most important role once the server has starte
 recommendations for the same movie, it makes sense if we cache the results of some movies, this leads to a drastic
 performance improvement.
 
-In this project we are caching the results from the CollaborativeFilteringRecommender Class. These results are only
+In this project, we are caching the results from the CollaborativeFilteringRecommender Class. These results are only
 cached till the model is retrained.
 
 To avoid using too much memory our cache has a max capacity to hold recommendations for ≈5% (400) movies.
 
 #### Cache Replacement Policy
 
-To ensure a higher hit ratio in this case, the cache
+To ensure a higher hit ratio, in this case, the cache
 uses [LRU (Least Recently Used) Caching Algorithm](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU))
 .
 

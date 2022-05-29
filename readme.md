@@ -19,7 +19,7 @@ Users can also find recommendations by genre or by searching for a particular mo
 
 ##### Features Implemented
 
-1. Content Based Recommendations
+1. Content-Based Recommendations
 2. Collaborative Filtering Based Recommendations
 3. Recommendations using IMDB's weighted rating formula
 4. Search
@@ -27,7 +27,7 @@ Users can also find recommendations by genre or by searching for a particular mo
 
 ### Project Timeline
 
-This project was built in 4 phases. Total time taken to complete this project was ≈ 3 weeks.
+This project was built in 4 phases. The total time taken to complete this project was ≈ 3 weeks.
 <br>
 <br>
 ![Project Timeline](https://i.imgur.com/Fjxz8TC.png)
@@ -90,7 +90,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-> Note: The recommender requires around 1 minute of one time precomputation. Please wait
+> Note: The recommender requires around 1 minute of one-time precomputation. Please wait
 > while it completes this step.
 
 ### Demonstration Video
